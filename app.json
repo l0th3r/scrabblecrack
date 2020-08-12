@@ -1,0 +1,12 @@
+{
+  "name": "scrabblecheat",
+  "displayName": "scrabblecheat",
+  "expo": {
+    "name": "scrabblecheat",
+    "slug": "scrabblecheat",
+    "version": "1.0.0",
+    "assetBundlePatterns": [
+      "**/*"
+    ]
+  }
+}
