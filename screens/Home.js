@@ -1,5 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import { Image, View, Button, StyleSheet, Text } from 'react-native';
+import wordsData from '../assets/liste_francais';
 
 export default function Home({navigation}){
 
@@ -7,7 +8,7 @@ export default function Home({navigation}){
   const [content, setContent] = useState(<View></View>);
 
   useEffect(() => {
-    //to load
+    //to load before AppStack
     setIsLoading(false);
   }, []);
   
@@ -18,15 +19,11 @@ export default function Home({navigation}){
       setContent(
       <Button
         title="Commencer"
-        color='#246659'
+        color='#c62334'
         onPress={() => navigation.navigate('AppStack')}
       />);
     }
   }, [isLoading]);
-  
-  // useEffect(() => {
-  //   return () => { console.log("App is destroyed")} ;
-  // }, []);
 
   // STRAIGHT ACCES TO APP STACK
   navigation.navigate('AppStack');
@@ -49,7 +46,7 @@ const style =  StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor:'#c62334'
+    backgroundColor:'#246659'
   },
 
   logo: {

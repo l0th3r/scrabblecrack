@@ -1,4 +1,4 @@
-export const mots_francais = ["Aaron",
+const mots_francais = ["Aaron",
 "abaissé",
 "abaissement",
 "abaisser",
@@ -22737,4 +22737,5 @@ export const mots_francais = ["Aaron",
 "zoologie",
 "zozoter",
 "Zurich",
-"zygote"]
+"zygote"];
+export default mots_francais;
