@@ -1,9 +1,9 @@
 {
-  "name": "scrabblecheat",
-  "displayName": "scrabblecheat",
+  "name": "scrabblecrack",
+  "displayName": "scrabblecrack",
   "expo": {
-    "name": "scrabblecheat",
-    "slug": "scrabblecheat",
+    "name": "scrabblecrack",
+    "slug": "scrabblecrack",
     "version": "1.0.0",
     "assetBundlePatterns": [
       "**/*"

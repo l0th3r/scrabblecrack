@@ -1,5 +1,4 @@
 import React from 'react';
-import { StyleSheet, View } from 'react-native';
 
 //navigator
 import {createAppContainer } from 'react-navigation';

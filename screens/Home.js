@@ -7,13 +7,13 @@ export default function Home({navigation}){
   const [content, setContent] = useState(<View></View>);
 
   useEffect(() => {
-
+    //to load
     setIsLoading(false);
   }, []);
   
   useEffect(() => {
     if(isLoading) {
-      setContent(<Text>LOADING</Text>);
+      setContent(<Text style={{color: 'white'}}>Loading...</Text>);
     } else {
       setContent(
       <Button
@@ -28,6 +28,11 @@ export default function Home({navigation}){
   //   return () => { console.log("App is destroyed")} ;
   // }, []);
 
+  // STRAIGHT ACCES TO APP STACK
+  navigation.navigate('AppStack');
+  // STRAIGHT ACCES TO APP STACK
+
+  
   return (
     <View style={style.container}>
       <View style={style.logoContainer}>
