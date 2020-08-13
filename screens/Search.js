@@ -12,7 +12,7 @@ export default function Search() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'red',
+    backgroundColor: '#246659',
     alignItems: 'center',
     justifyContent: 'center',
   },

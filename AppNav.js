@@ -12,8 +12,8 @@ import AdvancedScreen from './screens/Advanced';
 
 var BottomNavigator = createBottomTabNavigator(
   {
-    "Recherche": AdvancedScreen,
-    "Recherche Avancée": SearchScreen,
+    "Recherche": SearchScreen,
+    "Recherche Avancée": AdvancedScreen,
   },
   {
     defaultNavigationOptions: ({ navigation }) => ({
@@ -28,8 +28,11 @@ var BottomNavigator = createBottomTabNavigator(
       },
     }),
     tabBarOptions: {
-      activeTintColor: '#0984e3',
-      inactiveTintColor: '#dfe6e9',
+      activeTintColor: '#fff',
+      inactiveTintColor: '#d69da3',
+      tabStyle: {
+        backgroundColor: '#c62334'
+      }
     },
   }
 );
