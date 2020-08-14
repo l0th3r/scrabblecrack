@@ -1,12 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { StyleSheet, Text, View, TextInput, Button } from 'react-native';
+import { StyleSheet, Text, View, TextInput, Button, TouchableOpacity, Image } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 
-export default function Search() {
+export default function Search({navigation}) {
 
   //TEST PURPUSE
-  var searchTest = ["zimbabwe",
-  "zinc",
+  var searchTest = ["Zimbabwe",
+  "anticonstitutionel",
   "zingueur",
   "zip",
   "zlotys",
@@ -32,20 +32,28 @@ export default function Search() {
 
     if (search.length != 0) {
 
-      //processing research
+      console.log(search)
 
     }
   }, [searchInputValue]);
 
-  useEffect(() => {
+  useEffect(async() => {
     let toUse = searchResults;
     let toSend = []
     if (searchResults.length != 0){
       
       for(var i=0;i<toUse.length;i++){
+        let word = toUse[i];
         toSend.push(
         <View key={i}>
-          <Text style={styles.resultText}>{toUse[i]}</Text>
+          <TouchableOpacity
+            style={styles.button} 
+            onPress={()=>{ navigation.navigate('DefModal', {word: word, name: `"${word}" définition`})}}>
+            
+            <View style={styles.resultContent}>
+              <Text style={styles.resultText}>{toUse[i]}</Text>          
+            </View>
+          </TouchableOpacity>
           <View style={styles.resultLine}></View>
         </View>
         );
@@ -55,9 +63,6 @@ export default function Search() {
       setResultToDis(<Text style={styles.resultText}>No result</Text>);
     }
   }, [searchResults]);
-  
-  
-  // getisfocused isSearchInputFocused.current.isFocused()]);
 
   return (
     <View style={styles.page}>
@@ -66,9 +71,15 @@ export default function Search() {
         <Text style={styles.subTitle}>Cherchez des mots comportants vos lettres.</Text>
         <View style={styles.searchContainer}>
           <View style={styles.searchInputContainer}>
-            <TextInput ref={searchInputRef} autoCapitalize='characters' placeholder="Vos lettres" value={searchInputValue} onChangeText={(e)=>{setSearchInputValue(e)}} style={styles.searchInput}/>
+            <TextInput ref={searchInputRef}
+              autoCapitalize="characters"
+              placeholder="Vos lettres"
+              value={searchInputValue}
+              onChangeText={(e)=>{setSearchInputValue(e)}}
+              style={styles.searchInput}
+            />
           </View>
-          {/* <Button disabled={isInputEmpty} color="#c62334" title='Tricher' style={styles.searchButton}/> */}
+          {/* <Button color="#c62334" title='Tricher' style={styles.searchButton}/> */}
         </View>
 
         <View style={styles.resultsContainer}>
@@ -92,19 +103,23 @@ const styles = StyleSheet.create({
     padding: 10,
     overflow: 'hidden',
   },
+  resultContent: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
   resultText: {
     color: 'white',
-    fontSize: 17,
+    fontSize: 30,
     fontWeight: "600",
   },
   resultLine: {
     marginTop: 8,
     marginBottom: 8,
     height: 1, //TO CHANGE TO => 0.2
-    backgroundColor: '#fff'
+    backgroundColor: '#8ca5a0'
   },
-
-
+  
   page: {
     flex: 1,
     backgroundColor: '#246659',

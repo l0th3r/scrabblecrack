@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import { Image, View, Button, StyleSheet, Text } from 'react-native';
 import wordsData from '../assets/liste_francais';
 
-export default function Home({navigation}){
+export default function Home({navigation}) {
 
   const [isLoading, setIsLoading] = useState(true);
   const [content, setContent] = useState(<View></View>);
@@ -25,9 +25,9 @@ export default function Home({navigation}){
     }
   }, [isLoading]);
 
-  // STRAIGHT ACCES TO APP STACK
-  navigation.navigate('AppStack');
-  // STRAIGHT ACCES TO APP STACK
+  // STRAIGHT ACCESS TO APP STACK (dev purpuse only !)
+  // navigation.navigate('AppStack');
+  // STRAIGHT ACCESS TO APP STACK
 
   
   return (
