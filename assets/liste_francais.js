@@ -1,5 +1,4 @@
-const mots_francais = [
-"Aaron",
+["Aaron",
 "abaissé",
 "abaissement",
 "abaisser",
@@ -22738,5 +22737,5 @@ const mots_francais = [
 "zoologie",
 "zozoter",
 "Zurich",
-"zygote"];
-export default mots_francais;
+"zygote"
+]

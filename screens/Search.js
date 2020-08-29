@@ -1,99 +1,86 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, } from 'react';
 import Words_fr from '../assets/liste_francais';
 
 
-import { StyleSheet, Text, View, TextInput, Button, TouchableOpacity, Image } from 'react-native';
+import { StyleSheet, Text, View, TextInput, ActivityIndicator, FlatList, Platform } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 
 export default function Search({navigation}) {
 
-  //TEST PURPUSE
-  var searchTest = ["Zimbabwe",
-  "anticonstitutionel",
-  "zingueur",
-  "zip",
-  "zlotys",
-  "zombie",
-  "zone",
-  "zones",
-  "zoologie",
-  "zozoter",
-  "Zurich",];
-  //TEST PURPUSE
-
   //is input focused ref
   const searchInputRef = useRef(null);
-  const resultScrollRef = useRef(null);
 
   const[searchInputValue, setSearchInputValue] = useState("");
   const[searchResults, setSearchResults] = useState([]);
   const[resultToDis, setResultToDis] = useState();
-  const[loaderStyle, setLoaderStyle] = useState(null);
   const[isLoading, setIsLoading] = useState(false);
+  const[loadSwitch, setLoadSwitch] = useState(<Text style={styles.resultText}>Loading...</Text>);
 
   useEffect(()=>{
-    isLoading ? setLoaderStyle(styles.loading) : setLoaderStyle(null);
-  },[isLoading])
-
-  useEffect(() => {
-    setIsLoading(true);
-    let search = searchInputValue.toLowerCase();
-    resultScrollRef.current.scrollTo({x: 0, y: 0, animated: true});
-
-    if (search.length != 0) {
-      var letters = search.split('');
-      var sResult = [];
-      for(var f=0;f<Words_fr.length;f++) {
-        if(Words_fr[f].includes(letters[0])){
-          sResult.push(Words_fr[f]);
-        }
-      }
-      if(letters.length >= 2){
-        for(var i=1;i<letters.length;i++){
-          let temp = [];
-          for(var j=0;j<sResult.length;j++){
-            if(sResult[j].includes(letters[i])) {
-              temp.push(sResult[j]);
-            }
-          }
-          sResult = temp;
-        }
-      }
-      setSearchResults(sResult);
+    if (isLoading) {
+      setLoadSwitch(
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator size="large" color="#c62334" />
+        </View>
+      );
     } else {
-      setSearchResults([]);
+      setLoadSwitch(resultToDis);
     }
-    setIsLoading(false);
-  }, [searchInputValue]);
+  },[isLoading]);
 
   useEffect(() => {
     var fetch = async() => {
       let toUse = searchResults;
-      let toSend = []
       if (searchResults.length != 0){
-        
-        for(var i=0;i<toUse.length;i++){
-          let word = toUse[i];
-          toSend.push(
-          <View key={i}>
-            {/* <TouchableOpacity
-              style={styles.button} 
-              onPress={()=>{ navigation.navigate('DefModal', {target: word, name: `"${word}" définition`})}}> */}
-              <View style={styles.resultContent}>
-                <Text style={styles.resultText}>{toUse[i]}</Text>          
+        setResultToDis(
+          <FlatList
+            refreshing={isLoading}
+            initialNumToRender={10}
+            ItemSeparatorComponent={
+              Platform.OS !== 'android' &&
+              (({ highlighted }) => (
+                <View
+                  style={styles.resultLine}
+                />
+              ))
+            }
+            data={toUse}
+            renderItem={({ item, index }) => (
+              <View key={index}>
+                {/* <TouchableOpacity
+                  style={styles.button} 
+                  onPress={()=>{ navigation.navigate('DefModal', {target: word, name: `"${word}" définition`})}}> */}
+                  <View style={styles.resultContent}>
+                    <Text style={styles.resultText}>{item}</Text>          
+                  </View>
+                {/* </TouchableOpacity> */}
               </View>
-            {/* </TouchableOpacity> */}
-            <View style={styles.resultLine}></View>
-          </View>
-          );
-        }
-        setResultToDis(toSend);
+            )}
+          />
+        );
       } else {
-        setResultToDis(<Text style={styles.resultText}>No result</Text>);
+        setResultToDis(<Text style={styles.resultText}>Pas de Résultat</Text>);
       }
     }
     fetch();
+    setIsLoading(false);
   }, [searchResults]);
+
+  var post = async(q, page) => {
+    var rawResponse = await fetch(`https://scrabblecrackback.herokuapp.com/get-words?key=963Z852z741&q=${q}&limit=10&page=${page}`);
+    var res = await rawResponse.json();
+    if (!res.res){
+    setResultToDis(<Text style={styles.resultText}>{res.log}</Text>);
+    } else {
+      setSearchResults(res.result);
+    }
+  }
+
+  useEffect(() => {
+    setIsLoading(true);
+    let search = searchInputValue.toLowerCase();
+    post(search, 1);
+  }, [searchInputValue]);
 
   return (
     <View style={styles.page}>
@@ -110,17 +97,11 @@ export default function Search({navigation}) {
               style={styles.searchInput}
             />
           </View>
-          {/* <Button color="#c62334" title='Tricher' style={styles.searchButton}/> */}
         </View>
 
-        <View style={styles.resultsContainer}>
-          <View style={loaderStyle}>
-          </View>
-          <ScrollView ref={resultScrollRef} persistentScrollbar={true} onScrollBeginDrag={()=>searchInputRef.current.blur()}>
-            {resultToDis}
-          </ScrollView>
+        <View style={styles.resultsContainer}>  
+          {loadSwitch}
         </View>
-      
       </View>
     </View>
   );
@@ -130,7 +111,7 @@ const styles = StyleSheet.create({
   
   resultsContainer: {
     flex: 1,
-    // display: "flex",
+    display: "flex",
     width: '100%',
     borderRadius: 5,
     backgroundColor: '#194b41',
@@ -138,10 +119,10 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
   },
   loadingContainer: {
-    width: "100%",
-    height:"100%",
-    opacity: "20%",
-    backgroundColor: 'red',
+    flex: 1,
+    justifyContent: 'center',
+    alignItems:'center',
+    backgroundColor: '#194b41',
   },
   resultContent: {
     flex: 1,
