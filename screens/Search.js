@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useRef, } from 'react';
-import Words_fr from '../assets/liste_francais';
 
 
 import { StyleSheet, Text, View, TextInput, ActivityIndicator, FlatList, Platform } from 'react-native';
@@ -67,7 +66,7 @@ export default function Search({navigation}) {
   }, [searchResults]);
 
   var post = async(q, page) => {
-    var rawResponse = await fetch(`https://scrabblecrackback.herokuapp.com/get-words?key=963Z852z741&q=${q}&limit=10&page=${page}`);
+    var rawResponse = await fetch(`https://scrabblecrackback.herokuapp.com/get-words?key=963Z852z741&q=${q}`);
     var res = await rawResponse.json();
     if (!res.res){
     setResultToDis(<Text style={styles.resultText}>{res.log}</Text>);

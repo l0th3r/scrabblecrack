@@ -1,20 +1,27 @@
 import React, {useEffect, useState} from 'react';
-import { Image, View, Button, StyleSheet, Text } from 'react-native';
-import wordsData from '../assets/liste_francais';
+import { Image, View, Button, StyleSheet, Text, ActivityIndicator } from 'react-native';
 
 export default function Home({navigation}) {
 
   const [isLoading, setIsLoading] = useState(true);
-  const [content, setContent] = useState(<View></View>);
+  const [content, setContent] = useState(<ActivityIndicator size="large" color="#c62334" />);
+
+  const testDB = async() => {
+    var rawResponse = await fetch(`https://scrabblecrackback.herokuapp.com?key=963Z852z741`);
+    var res = await rawResponse.json();
+    console.log(res);
+  }
+
 
   useEffect(() => {
-    //to load before AppStack
+    setIsLoading(true);
+    testDB();
     setIsLoading(false);
   }, []);
   
   useEffect(() => {
     if(isLoading) {
-      setContent(<Text style={{color: 'white'}}>Loading...</Text>);
+      setContent(<ActivityIndicator size="large" color="#c62334" />);
     } else {
       setContent(
       <Button
