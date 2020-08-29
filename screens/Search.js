@@ -1,4 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
+import Words_fr from '../assets/liste_francais';
+
+
 import { StyleSheet, Text, View, TextInput, Button, TouchableOpacity, Image } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 
@@ -23,45 +26,73 @@ export default function Search({navigation}) {
   const resultScrollRef = useRef(null);
 
   const[searchInputValue, setSearchInputValue] = useState("");
-  const[searchResults, setSearchResults] = useState(searchTest);
+  const[searchResults, setSearchResults] = useState([]);
   const[resultToDis, setResultToDis] = useState();
+  const[loaderStyle, setLoaderStyle] = useState(null);
+  const[isLoading, setIsLoading] = useState(false);
+
+  useEffect(()=>{
+    isLoading ? setLoaderStyle(styles.loading) : setLoaderStyle(null);
+  },[isLoading])
 
   useEffect(() => {
+    setIsLoading(true);
     let search = searchInputValue.toLowerCase();
     resultScrollRef.current.scrollTo({x: 0, y: 0, animated: true});
 
     if (search.length != 0) {
-
-      console.log(search)
-
+      var letters = search.split('');
+      var sResult = [];
+      for(var f=0;f<Words_fr.length;f++) {
+        if(Words_fr[f].includes(letters[0])){
+          sResult.push(Words_fr[f]);
+        }
+      }
+      if(letters.length >= 2){
+        for(var i=1;i<letters.length;i++){
+          let temp = [];
+          for(var j=0;j<sResult.length;j++){
+            if(sResult[j].includes(letters[i])) {
+              temp.push(sResult[j]);
+            }
+          }
+          sResult = temp;
+        }
+      }
+      setSearchResults(sResult);
+    } else {
+      setSearchResults([]);
     }
+    setIsLoading(false);
   }, [searchInputValue]);
 
-  useEffect(async() => {
-    let toUse = searchResults;
-    let toSend = []
-    if (searchResults.length != 0){
-      
-      for(var i=0;i<toUse.length;i++){
-        let word = toUse[i];
-        toSend.push(
-        <View key={i}>
-          <TouchableOpacity
-            style={styles.button} 
-            onPress={()=>{ navigation.navigate('DefModal', {word: word, name: `"${word}" définition`})}}>
-            
-            <View style={styles.resultContent}>
-              <Text style={styles.resultText}>{toUse[i]}</Text>          
-            </View>
-          </TouchableOpacity>
-          <View style={styles.resultLine}></View>
-        </View>
-        );
+  useEffect(() => {
+    var fetch = async() => {
+      let toUse = searchResults;
+      let toSend = []
+      if (searchResults.length != 0){
+        
+        for(var i=0;i<toUse.length;i++){
+          let word = toUse[i];
+          toSend.push(
+          <View key={i}>
+            {/* <TouchableOpacity
+              style={styles.button} 
+              onPress={()=>{ navigation.navigate('DefModal', {target: word, name: `"${word}" définition`})}}> */}
+              <View style={styles.resultContent}>
+                <Text style={styles.resultText}>{toUse[i]}</Text>          
+              </View>
+            {/* </TouchableOpacity> */}
+            <View style={styles.resultLine}></View>
+          </View>
+          );
+        }
+        setResultToDis(toSend);
+      } else {
+        setResultToDis(<Text style={styles.resultText}>No result</Text>);
       }
-      setResultToDis(toSend);
-    } else {
-      setResultToDis(<Text style={styles.resultText}>No result</Text>);
     }
+    fetch();
   }, [searchResults]);
 
   return (
@@ -83,6 +114,8 @@ export default function Search({navigation}) {
         </View>
 
         <View style={styles.resultsContainer}>
+          <View style={loaderStyle}>
+          </View>
           <ScrollView ref={resultScrollRef} persistentScrollbar={true} onScrollBeginDrag={()=>searchInputRef.current.blur()}>
             {resultToDis}
           </ScrollView>
@@ -97,11 +130,18 @@ const styles = StyleSheet.create({
   
   resultsContainer: {
     flex: 1,
+    // display: "flex",
     width: '100%',
     borderRadius: 5,
     backgroundColor: '#194b41',
     padding: 10,
     overflow: 'hidden',
+  },
+  loadingContainer: {
+    width: "100%",
+    height:"100%",
+    opacity: "20%",
+    backgroundColor: 'red',
   },
   resultContent: {
     flex: 1,

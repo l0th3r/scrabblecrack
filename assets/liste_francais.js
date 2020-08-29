@@ -1,4 +1,5 @@
-const mots_francais = ["Aaron",
+const mots_francais = [
+"Aaron",
 "abaissé",
 "abaissement",
 "abaisser",
