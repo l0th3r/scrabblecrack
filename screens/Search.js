@@ -66,7 +66,7 @@ export default function Search({navigation}) {
   }, [searchResults]);
 
   var post = async(q, page) => {
-    var rawResponse = await fetch(`https://scrabblecrackback.herokuapp.com/get-words?key=963Z852z741&q=${q}`);
+    var rawResponse = await fetch(`https://scrabblecrackback.herokuapp.com/get-words?key=963Z852z741&q=${q}`, {mode:'cors'});
     var res = await rawResponse.json();
     if (!res.res){
     setResultToDis(<Text style={styles.resultText}>{res.log}</Text>);
@@ -89,7 +89,6 @@ export default function Search({navigation}) {
         <View style={styles.searchContainer}>
           <View style={styles.searchInputContainer}>
             <TextInput ref={searchInputRef}
-              autoCapitalize="characters"
               placeholder="Vos lettres"
               value={searchInputValue}
               onChangeText={(e)=>{setSearchInputValue(e)}}
@@ -98,7 +97,8 @@ export default function Search({navigation}) {
           </View>
         </View>
 
-        <View style={styles.resultsContainer}>  
+        {/* NEED ref.blur() on the keyboard */}
+        <View style={styles.resultsContainer}> 
           {loadSwitch}
         </View>
       </View>
