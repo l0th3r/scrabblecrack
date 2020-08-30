@@ -21,12 +21,12 @@ function AppStack() {
           let iconName;
           if (route.name === 'Search') {
             iconName = focused ?
-            <MaterialCommunityIcons name="format-letter-matches" size={30} color="white" /> :
-            <MaterialIcons name="text-format" size={31} color="#d69da3" /> ;
+            <MaterialCommunityIcons name="format-letter-matches" size={32} color="white" /> :
+            <MaterialIcons name="text-format" size={33} color="#d69da3" /> ;
           } if (route.name === 'Advanced') {
             iconName = focused ?
-            <Ionicons name={iconName} size={size} color={"#fff"}/> :
-            <Ionicons name={iconName} size={size} color={"#fff"}/> ;
+            <MaterialCommunityIcons name="filter" size={30} color="white" /> :
+            <MaterialCommunityIcons name="filter-outline" size={30} color="#d69da3" /> ;
           }
           return <View style={style.logoContainer}>{iconName}</View>;
         },
@@ -34,6 +34,9 @@ function AppStack() {
       tabBarOptions={{
         activeTintColor: '#fff',
         inactiveTintColor: '#d69da3',
+        labelStyle: { paddingLeft: 6 },
+        labelPosition: "beside-icon",
+        keyboardHidesTabBar: true,
         tabStyle: {
           backgroundColor: '#c62334'
         }
@@ -53,7 +56,7 @@ function AppStack() {
 
 const style =  StyleSheet.create({
   logoContainer: {
-
+    marginRight: -5,
   }
 });
 

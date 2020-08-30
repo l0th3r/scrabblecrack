@@ -1,8 +1,7 @@
 import React, { useState, useEffect, useRef, } from 'react';
 
 
-import { StyleSheet, Text, View, TextInput, ActivityIndicator, FlatList, Platform } from 'react-native';
-import { ScrollView } from 'react-native-gesture-handler';
+import { StyleSheet, Text, View, TextInput, ActivityIndicator, FlatList, Platform, Alert } from 'react-native';
 
 export default function Search({navigation}) {
 

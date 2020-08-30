@@ -10,7 +10,7 @@ export default function Home({navigation}) {
     color='#c62334'
     onPress={() => {testDB()}}
     />);
-  const [toDis, setToDis] = useState();
+  const [toDis, setToDis] = useState(null);
   const [connected, setConnected] = useState(null);
   const [erLog, setErLog] = useState(null);
 
@@ -56,13 +56,35 @@ export default function Home({navigation}) {
 
   useEffect(()=>{
     if (connected) {
+      setErLog(null)
+      setConnected(null)
+      setToDis(null);
+      setIsLoading(false);
+      setContent(
+        <Button
+          title="Commencer"
+          color='#c62334'
+          onPress={() => {testDB()}}
+        />
+      );
       navigation.navigate('AppStack');
     } else if (connected === false) {
+      Alert.alert(
+        "Erreur de connection à internet",
+        `Verifiez votre connection à internet. erreur => "${erLog}"`,
+        [
+          { text: "OK",}
+        ],
+        { cancelable: false }
+      );
       setContent(
         <View style={style.errorContainer}>
-          <Text style={style.error}>
-            {erLog}
+          {/* <Text style={style.error}>
+            {`Il doit y avoir un probleme avec votre connection internet :(`}
           </Text>
+          <Text style={style.error}>
+            {`${erLog}`}
+          </Text> */}
           <Button
           title="Recommencer ?"
           color='#c62334'
