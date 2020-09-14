@@ -1,18 +1,28 @@
 import React, { useState, useEffect, useRef, } from 'react';
 
 
-import { StyleSheet, Text, View, TextInput, ActivityIndicator, FlatList, Platform, Alert } from 'react-native';
+import { 
+Alert,
+StyleSheet,
+Text,
+View,
+TextInput,
+ActivityIndicator,
+FlatList,
+Platform,
+TouchableOpacity
+} from 'react-native';
 
 export default function Search({navigation}) {
 
   //is input focused ref
   const searchInputRef = useRef(null);
 
-  const[searchInputValue, setSearchInputValue] = useState("");
-  const[searchResults, setSearchResults] = useState([]);
-  const[resultToDis, setResultToDis] = useState();
-  const[isLoading, setIsLoading] = useState(false);
-  const[loadSwitch, setLoadSwitch] = useState(<Text style={styles.resultText}>Loading...</Text>);
+  const [searchInputValue, setSearchInputValue] = useState("");
+  const [searchResults, setSearchResults] = useState([]);
+  const [resultToDis, setResultToDis] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [loadSwitch, setLoadSwitch] = useState(<Text style={styles.resultText}>Loading...</Text>);
 
   useEffect(()=>{
     if (isLoading) {
@@ -45,13 +55,14 @@ export default function Search({navigation}) {
             data={toUse}
             renderItem={({ item, index }) => (
               <View key={index}>
-                {/* <TouchableOpacity
+                <TouchableOpacity
                   style={styles.button} 
-                  onPress={()=>{ navigation.navigate('DefModal', {target: word, name: `"${word}" définition`})}}> */}
+                  onPress={()=>{ navigation.navigate('DefModal', {target: item, name: `"${item}" définition`}) }}
+                >
                   <View style={styles.resultContent}>
                     <Text style={styles.resultText}>{item}</Text>          
                   </View>
-                {/* </TouchableOpacity> */}
+                </TouchableOpacity>
               </View>
             )}
           />
@@ -64,14 +75,45 @@ export default function Search({navigation}) {
     setIsLoading(false);
   }, [searchResults]);
 
-  var post = async(q, page) => {
-    var rawResponse = await fetch(`https://scrabblecrackback.herokuapp.com/get-words?key=963Z852z741&q=${q}`, {mode:'cors'});
-    var res = await rawResponse.json();
-    if (!res.res){
-    setResultToDis(<Text style={styles.resultText}>{res.log}</Text>);
-    } else {
-      setSearchResults(res.result);
-    }
+  var post = async(q) => {
+    var rawResponse;
+    let resStatus = 0;
+    await fetch(`https://scrabblecrackback.herokuapp.com/get-words?key=963Z852z741&q=${q}`)
+    .then(res => {
+      resStatus = res.status
+      return res.json()
+    }).then(res => {
+      switch (resStatus) {
+        case 200:
+          res.res ?
+            setSearchResults(res.result): 
+            setResultToDis(<Text style={styles.resultText}>{res.log}</Text>);
+          break
+        case 400:
+          Alert.alert(
+            'Error ' + resStatus,
+            'Probably invalid JSON error',
+            [{ text: 'OK', onPress:()=>navigation.navigate('Home')}],
+            { cancelable: false }
+          );
+          break
+        case 500:
+          Alert.alert(
+            'Error ' + resStatus,
+            'Server error, try again later please.',
+            [{ text: 'OK', onPress:()=>navigation.navigate('Home')}],
+            { cancelable: false }
+          );
+          break
+      }
+    }).catch(err => {
+      Alert.alert(
+        'Error',
+        'Server error, try again later please.',
+        [{ text: 'OK', onPress:()=>navigation.navigate('Home')}],
+        { cancelable: false }
+      );
+    });
   }
 
   useEffect(() => {
@@ -135,7 +177,7 @@ const styles = StyleSheet.create({
   resultLine: {
     marginTop: 8,
     marginBottom: 8,
-    height: 1, //TO CHANGE TO => 0.2
+    height: 1,
     backgroundColor: '#8ca5a0'
   },
   
@@ -154,24 +196,23 @@ const styles = StyleSheet.create({
   },
   title: {
     color: 'white',
-    fontWeight: '800',
     fontSize: 30,
     marginTop: 0,
-    marginBottom: 50,
+    marginBottom: 15,
   },
   subTitle: {
     color: 'white',
     fontWeight: '500',
     fontSize: 21,
     marginTop: 0,
-    marginBottom: 30,
+    marginBottom: 25,
   },
   searchContainer: {
     width: '100%',
     justifyContent: 'space-between',
     alignItems: 'center',
     flexDirection: 'row',
-    marginBottom: 30,
+    marginBottom: 15,
   },
   searchInputContainer: {
     flex: 1,

@@ -16,8 +16,6 @@ export default function Home({navigation}) {
 
   const testDB = async() => {
     setIsLoading(true);
-    // var rawResponse = await fetch(`https://scrabblecrackback.herokuapp.com?key=963Z852z741`, {mode:'cors'});
-    // var res = await rawResponse.json();
 
     let resStatus = 0;
     await fetch("https://scrabblecrackback.herokuapp.com?key=963Z852z741")
@@ -25,6 +23,7 @@ export default function Home({navigation}) {
       resStatus = res.status
       return res.json()
     }).then(res => {
+      console.log(resStatus)
       switch (resStatus) {
         case 200:
           if (res.res) {setConnected(true)}
@@ -39,8 +38,7 @@ export default function Home({navigation}) {
           setErLog('Server Error, sorry try again later...');
           break
       }
-    })
-    .catch(err => {
+    }).catch(err => {
       setConnected(false);
       setErLog(err);
     });
